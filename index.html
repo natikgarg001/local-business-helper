@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Local Business Helper – Ambala · Kurukshetra · Mullana</title>
+<style>
+:root{--bg:#fbf7f0;--card:#fff;--tx:#2b2118;--mu:#7a6a5a;--ac:#c2410c;--ac2:#fde8d8;--bd:#eadfce;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1a1511;--card:#251e18;--tx:#f3e9dc;--mu:#b7a794;--ac:#fb923c;--ac2:#3a2616;--bd:#3a2f25}}
+*{box-sizing:border-box}html{color-scheme:light dark}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+.w{max-width:760px;margin:0 auto;padding:16px}
+h1{font-size:1.4rem;margin:8px 0 2px}p.s{color:var(--mu);margin:0 0 14px}
+.tabs{display:flex;gap:8px;margin-bottom:14px}
+.tabs button{flex:1;padding:10px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:10px;font-weight:600}
+.tabs button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;margin-bottom:12px}
+input,textarea,select{width:100%;padding:10px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx);font:inherit;margin:4px 0 10px}
+label{font-size:.85rem;color:var(--mu)}
+.btn{background:var(--ac);color:#fff;border:0;border-radius:10px;padding:10px 16px;font-weight:600;font:inherit;font-weight:600}
+.btn.g{background:var(--ac2);color:var(--ac)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px}
+.chip{white-space:nowrap;padding:6px 12px;border-radius:99px;border:1px solid var(--bd);background:var(--card);color:var(--tx);font:inherit;font-size:.85rem}
+.chip.on{background:var(--ac2);color:var(--ac);border-color:var(--ac)}
+.tag{display:inline-block;font-size:.72rem;background:var(--ac2);color:var(--ac);padding:2px 8px;border-radius:99px;margin-right:4px}
+.why{background:var(--ac2);border-radius:10px;padding:8px 10px;margin:8px 0;font-size:.9rem}
+.m{color:var(--mu);font-size:.88rem}.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+a.b{text-decoration:none;display:inline-block;padding:7px 12px;border-radius:10px;border:1px solid var(--ac);color:var(--ac);font-size:.85rem}
+.h{display:none}
+</style>
+</head>
+<body>
+<div class="w">
+<h1>🧭 Local Business Helper</h1>
+<p class="s">Ambala · Kurukshetra · Mullana – chhote local dukaan, dhaba, artisan aur guide, seedha tourists tak.</p>
+<div class="tabs"><button id="t1" class="on">🧳 Tourist</button><button id="t2">🏪 Business Owner</button></div>
+
+<section id="v1">
+<div class="card">
+<label>Aap kya dhoondh rahe ho? (Hindi/English, jaise: “budget mein pure veg khaana Kurukshetra mein”)</label>
+<textarea id="q" rows="2" placeholder="Mujhe family ke saath rukne ki jagah aur local handicraft chahiye…"></textarea>
+<button class="btn" id="ask">✨ AI se suggest karwao</button>
+<div id="ai" class="m" style="margin-top:10px"></div>
+</div>
+<div class="chips" id="chips"></div>
+<div id="list"></div>
+</section>
+
+<section id="v2" class="h">
+<div class="card">
+<b>Apna business list karo</b>
+<p class="m" style="margin:4px 0 10px">Bas basic details do. AI tourists ke liye attractive description (English + Hindi) bana dega.</p>
+<label>Business ka naam</label><input id="n" placeholder="Jaise: Sharma Juti House">
+<label>Type</label><select id="c"><option>Food</option><option>Crafts</option><option>Stay</option><option>Guide</option><option>Shop</option></select>
+<label>Area</label><select id="a"><option>Kurukshetra</option><option>Ambala Cantt</option><option>Ambala City</option><option>Mullana</option></select>
+<label>Aap kya bechte/dete ho? (apni bhasha mein likho)</label><textarea id="d" rows="3" placeholder="Hath ki bani punjabi juti, 300 se 1200 tak, 3 pushton se…"></textarea>
+<label>Price range</label><input id="p" placeholder="₹300–1200">
+<label>Timings</label><input id="h" placeholder="10am–8pm, Mon–Sat">
+<label>WhatsApp/Phone (10 digit)</label><input id="ph" inputmode="numeric" placeholder="98XXXXXXXX">
+<button class="btn" id="gen">✨ AI se listing banao</button>
+<div id="prev" style="margin-top:12px"></div>
+</div>
+</section>
+</div>
+
+<script>
+var SEED=[
+{id:"s1",name:"Baba Pure Veg Dhaba",cat:"Food",area:"Kurukshetra",price:"₹150–250",hours:"8am–10pm",desc:"Brahma Sarovar ke paas simple pure veg thali, kadhi-chawal aur desi ghee ke parathe. Pilgrims aur families ki pasand.",tip:"Subah ka parantha-lassi try karein."},
+{id:"s2",name:"Gita Handicraft Corner",cat:"Crafts",area:"Kurukshetra",price:"₹100–2000",hours:"9am–8pm",desc:"Lakdi aur peetal ke Gita-themed souvenirs, chhote rath aur mala. Local artisans se seedha liye gaye.",tip:"Jyotisar visit ke baad yahan jaana easy hai."},
+{id:"s3",name:"Sadar Bazaar Chaat Corner",cat:"Food",area:"Ambala Cantt",price:"₹50–120",hours:"4pm–10pm",desc:"Cantt ke purane bazaar ki famous chaat, golgappe aur tikki. Shaam ko sabse zyada raunak.",tip:"Shaam 6 baje ke baad bheed hoti hai, jaldi aayein."},
+{id:"s4",name:"Ambala Science Instruments Market",cat:"Shop",area:"Ambala City",price:"₹200–5000",hours:"10am–7pm",desc:"Ambala scientific instruments ke liye jaana jaata hai. Students aur teachers ke liye models, lab kits aur glassware.",tip:"Bulk mein lena ho to bhaav-taav karein."},
+{id:"s5",name:"Phulkari & Juti Stall",cat:"Crafts",area:"Ambala Cantt",price:"₹300–1200",hours:"10am–8pm",desc:"Hath ki phulkari dupatte aur Punjabi juti, gift ke liye perfect.",tip:"Juti ka size pehle try karein, exchange mushkil hota hai."},
+{id:"s6",name:"Heritage Walk Guide (Pandit Rakesh)",cat:"Guide",area:"Kurukshetra",price:"₹500 / half-day",hours:"7am–6pm",desc:"Mahabharat ki kahaniyon ke saath Brahma Sarovar aur Jyotisar ka guided walk, Hindi mein.",tip:"Subah jaldi shuru karein, dhoop se pehle."},
+{id:"s7",name:"Mullana Green Farm Homestay",cat:"Stay",area:"Mullana",price:"₹900–1500 / raat",hours:"Check-in 12pm",desc:"Khet ke beech family homestay, ghar ka khaana, shaant mahaul. Cantt aur Kurukshetra dono paas.",tip:"Pehle se call karke booking karein."},
+{id:"s8",name:"GT Road Punjabi Dhaba",cat:"Food",area:"Ambala City",price:"₹100–250",hours:"7am–11pm",desc:"Makkhan wale parathe, lassi aur sarson ka saag (sardiyon mein). Highway travellers ka favourite.",tip:"Lassi ka bada glass share karein."}
+];
+var mine=[];try{mine=JSON.parse(localStorage.getItem("mine")||"[]")}catch(e){}
+var cat="All",S=null,draft=null,$=function(i){return document.getElementById(i)};
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+(async function(){try{if(window.claude)S=await claude.use("sample")}catch(e){}})();
+function all(){return mine.concat(SEED)}
+function card(l,why){
+var ph=(l.phone||"").replace(/\D/g,"");
+var acts=ph.length>=10?'<a class="b" href="tel:+91'+ph.slice(-10)+'">📞 Call</a><a class="b" href="https://wa.me/91'+ph.slice(-10)+'">💬 WhatsApp</a>':'<span class="m">Demo listing</span>';
+return '<div class="card"><span class="tag">'+esc(l.cat)+'</span><span class="tag">📍 '+esc(l.area)+'</span><h3 style="margin:8px 0 4px">'+esc(l.name)+'</h3>'
++(why?'<div class="why">✨ '+esc(why)+'</div>':'')
++'<div>'+esc(l.desc)+'</div>'+(l.desc_hi?'<div class="m" style="margin-top:4px">'+esc(l.desc_hi)+'</div>':'')
++'<div class="m" style="margin-top:6px">💰 '+esc(l.price)+' · 🕒 '+esc(l.hours)+'</div>'
++(l.tip?'<div class="m">💡 '+esc(l.tip)+'</div>':'')+'<div class="row">'+acts+'</div></div>'}
+function render(){
+var cs=["All","Food","Crafts","Stay","Guide","Shop"];
+$("chips").innerHTML=cs.map(function(c){return '<button class="chip'+(c==cat?' on':'')+'" data-c="'+c+'">'+c+'</button>'}).join("");
+var L=all().filter(function(l){return cat=="All"||l.cat==cat});
+$("list").innerHTML=L.map(function(l){return card(l)}).join("")||'<p class="m">Koi listing nahi mili.</p>'}
+$("chips").onclick=function(e){var c=e.target.getAttribute("data-c");if(c){cat=c;render()}};
+function tab(n){$("v1").className=n==1?"":"h";$("v2").className=n==2?"":"h";$("t1").className=n==1?"on":"";$("t2").className=n==2?"on":""}
+$("t1").onclick=function(){tab(1)};$("t2").onclick=function(){tab(2)};
+
+$("ask").onclick=async function(){
+var q=$("q").value.trim();if(!q)return;
+$("ai").textContent="Dhoondh raha hoon…";
+var L=all(),picks=null,note="";
+if(S){try{
+var r=await S.json("Tum ek local tourism guide ho (Ambala, Kurukshetra, Mullana). Tourist ki request: \""+q+"\". Sirf in listings mein se 1 se 4 sabse sahi chuno: "+JSON.stringify(L.map(function(l){return{id:l.id,name:l.name,cat:l.cat,area:l.area,price:l.price,desc:l.desc}}))+". Sirf JSON do: {\"note\":\"1 line friendly Hinglish summary\",\"picks\":[{\"id\":\"...\",\"why\":\"1 line Hinglish kyun\"}]}. Listings se bahar kuch invent mat karo.",{cache:false});
+picks=r.picks;note=r.note}catch(e){}}
+if(!picks){var w=q.toLowerCase().split(/\s+/);picks=L.filter(function(l){var t=(l.name+l.cat+l.area+l.desc).toLowerCase();return w.some(function(x){return x.length>2&&t.indexOf(x)>-1})}).slice(0,4).map(function(l){return{id:l.id,why:"Aapke search se match"}});note=S?"AI abhi available nahi, keyword search se dikha raha hoon.":"Keyword search se dikha raha hoon."}
+var h="",byId={};L.forEach(function(l){byId[l.id]=l});
+(picks||[]).forEach(function(p){if(byId[p.id])h+=card(byId[p.id],p.why)});
+$("ai").innerHTML='<div>'+esc(note||"Ye options aapke liye:")+'</div>';
+$("list").innerHTML=h||'<p class="m">Kuch match nahi hua, dusre shabd try karein.</p>';
+cat="All";$("chips").innerHTML='<button class="chip on" id="all">← Sab listings dekho</button>';$("all").onclick=function(){$("ai").textContent="";render()}};
+
+$("gen").onclick=async function(){
+var n=$("n").value.trim(),d=$("d").value.trim();
+if(!n||!d){$("prev").innerHTML='<p class="m">Naam aur description zaroor bharein.</p>';return}
+if(!S){$("prev").innerHTML='<p class="m">AI abhi available nahi hai is view mein.</p>';return}
+$("prev").textContent="AI listing bana raha hai…";
+try{
+var r=await S.json("Ek chhote local business ke liye tourist-friendly listing likho. Naam: "+n+". Type: "+$("c").value+". Area: "+$("a").value+". Owner ne bataya: \""+d+"\". Sirf yahi facts use karo, kuch naya claim mat jodo. Sirf JSON do: {\"desc_en\":\"2 sentences warm English\",\"desc_hi\":\"2 sentences simple Hindi\",\"tip\":\"1 short visitor tip jo diye gaye facts se bane\"}",{cache:false});
+draft={id:"m"+Date.now(),name:n,cat:$("c").value,area:$("a").value,price:$("p").value||"Poochh kar",hours:$("h").value||"Call karein",phone:$("ph").value,desc:r.desc_en,desc_hi:r.desc_hi,tip:r.tip};
+$("prev").innerHTML='<b>Preview</b>'+card(draft)+'<button class="btn" id="sv">✅ Publish karo</button> <button class="btn g" id="rg">🔁 Dobara banao</button>';
+$("sv").onclick=function(){mine.unshift(draft);try{localStorage.setItem("mine",JSON.stringify(mine))}catch(e){}
+$("prev").innerHTML='<p>✅ Listing live! Tourist tab mein dikhegi.</p>';["n","d","p","h","ph"].forEach(function(i){$(i).value=""});render();tab(1)};
+$("rg").onclick=$("gen").onclick;
+}catch(e){$("prev").innerHTML='<p class="m">AI se jawab nahi aaya, dobara try karein.</p>'}};
+render();
+</script>
+</body>
+</html>
